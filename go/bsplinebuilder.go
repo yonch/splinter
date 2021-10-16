@@ -21,6 +21,22 @@ var (
 	ErrDimensionMismatch = errors.New("Input dimension not equal to BSpline's")
 )
 
+type KnotSpacing int
+
+const (
+	KnotSpacingAsSampled    KnotSpacing = 0
+	KnotSpacingEquidistant              = 1
+	KnotSpacingExperimental             = 2
+)
+
+type Smoothing int
+
+const (
+	SmoothingNone     Smoothing = 0
+	SmoothingIdentity           = 1
+	SmoothingPspline            = 2
+)
+
 type BSplineBuilder struct {
 	ptr C.splinter_obj_ptr
 }
@@ -119,6 +135,33 @@ func (builder *BSplineBuilder) Free() {
 	runtime.SetFinalizer(builder, nil)
 	C.splinter_bspline_builder_delete(builder.ptr)
 	builder.ptr = nil
+}
+
+func (builder *BSplineBuilder) KnotSpacing(ks KnotSpacing) error {
+	C.splinter_bspline_builder_set_knot_spacing(builder.ptr, C.int(ks))
+	return getErrorIfExists()
+}
+
+func (builder *BSplineBuilder) Smoothing(s Smoothing) error {
+	C.splinter_bspline_builder_set_smoothing(builder.ptr, C.int(s))
+	return getErrorIfExists()
+}
+
+func (builder *BSplineBuilder) Alpha(alpha float64) error {
+	C.splinter_bspline_builder_set_alpha(builder.ptr, C.double(alpha))
+	return getErrorIfExists()
+}
+
+func (builder *BSplineBuilder) NumBasisFunctions(n []int) error {
+
+	// Convert to C.uint
+	nC := make([]C.int, len(n))
+	for i, x := range n {
+		nC[i] = C.int(x)
+	}
+
+	C.splinter_bspline_builder_set_num_basis_functions(builder.ptr, &nC[0], C.int(len(nC)))
+	return getErrorIfExists()
 }
 
 func (builder *BSplineBuilder) Build() (*BSpline, error) {
