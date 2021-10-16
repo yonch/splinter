@@ -40,8 +40,12 @@ void splinter_bspline_builder_set_degree(splinter_obj_ptr bspline_builder_ptr, u
     auto builder = get_builder(bspline_builder_ptr);
     if(builder != nullptr)
     {
-        auto _degrees = get_vector(degrees, n);
-        builder->degree(_degrees);
+        try {
+            auto _degrees = get_vector(degrees, n);
+            builder->degree(_degrees);
+        } catch (const Exception &e) {
+            set_error_string(e.what());
+        }
     }
 }
 
@@ -50,12 +54,16 @@ void splinter_bspline_builder_set_num_basis_functions(splinter_obj_ptr bspline_b
     auto builder = get_builder(bspline_builder_ptr);
     if(builder != nullptr)
     {
-        std::vector<unsigned int> _num_basis_functions((unsigned int) n);
-        for (int i = 0; i < n; ++i)
-        {
-            _num_basis_functions.at(i) = (unsigned int) num_basis_functions[i];
+        try {
+            std::vector<unsigned int> _num_basis_functions((unsigned int) n);
+            for (int i = 0; i < n; ++i)
+            {
+                _num_basis_functions.at(i) = (unsigned int) num_basis_functions[i];
+            }
+            builder->numBasisFunctions(_num_basis_functions);
+        } catch (const Exception &e) {
+            set_error_string(e.what());
         }
-        builder->numBasisFunctions(_num_basis_functions);
     }
 }
 
@@ -114,8 +122,13 @@ void splinter_bspline_builder_set_alpha(splinter_obj_ptr bspline_builder_ptr, do
         return;
     }
 
-    builder->alpha(alpha);
+    try {
+        builder->alpha(alpha);
+    } catch (const Exception &e) {
+        set_error_string(e.what());
+    }
 }
+ 
 
 splinter_obj_ptr splinter_bspline_builder_build(splinter_obj_ptr bspline_builder_ptr)
 {
@@ -125,9 +138,18 @@ splinter_obj_ptr splinter_bspline_builder_build(splinter_obj_ptr bspline_builder
         return nullptr;
     }
 
-    auto bspline = builder->build().clone();
-    bsplines.insert(bspline);
-    return bspline;
+    try
+    {
+        auto bspline = builder->build().clone();
+        bsplines.insert(bspline);
+        return bspline;
+    }
+    catch (const Exception &e)
+    {
+        set_error_string(e.what());
+        return nullptr;
+    }
+    // unreachable
 }
 
 void splinter_bspline_builder_delete(splinter_obj_ptr bspline_builder_ptr)
