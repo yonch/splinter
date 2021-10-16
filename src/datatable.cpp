@@ -177,7 +177,9 @@ std::multiset<DataPoint>::const_iterator DataTable::cend() const
  */
 std::vector< std::vector<double> > DataTable::getTableX() const
 {
+#ifndef SPLINTER_ALLOW_SCATTER
     gridCompleteGuard();
+#endif
 
     // Initialize table
     std::vector<std::vector<double>> table;

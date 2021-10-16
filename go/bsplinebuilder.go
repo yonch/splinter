@@ -1,7 +1,7 @@
 package splinter
 
-// #cgo CXXFLAGS: -std=c++11 -I../include  -Werror=return-type
-// #cgo CFLAGS: -I../include  -Werror=return-type
+// #cgo CXXFLAGS: -std=c++11 -I../include  -Werror=return-type -DSPLINTER_ALLOW_SCATTER
+// #cgo CFLAGS: -I../include  -Werror=return-type -DSPLINTER_ALLOW_SCATTER
 // #cgo pkg-config: eigen3
 // #include <cinterface/cinterface.h>
 // #include <stdlib.h>

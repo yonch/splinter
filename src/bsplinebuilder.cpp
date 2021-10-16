@@ -36,8 +36,10 @@ BSpline BSpline::Builder::build() const
 {
     // Check data
     // TODO: Remove this test
+#ifndef SPLINTER_ALLOW_SCATTER
     if (!_data.isGridComplete())
         throw Exception("BSpline::Builder::build: Cannot create B-spline from irregular (incomplete) grid.");
+#endif
 
     // Build knot vectors
     auto knotVectors = computeKnotVectors();
