@@ -89,7 +89,7 @@ func (dt DataTable) AddColumns(columns ...[]float64) error {
 
 	// now add the samples
 	C.splinter_datatable_add_samples_col_major(dt.ptr, (*C.double)(unsafe.Pointer(&concat[0])),
-		C.int(n), C.int(len(columns)))
+		C.int(n), C.int(len(columns)-1))
 	return getErrorIfExists()
 }
 
