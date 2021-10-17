@@ -1,8 +1,9 @@
 package splinter
 
-// #cgo CXXFLAGS: -std=c++11 -I../include -I../thirdparty/Eigen -Werror=return-type -DSPLINTER_ALLOW_SCATTER
-// #cgo CFLAGS: -I../include  -I../thirdparty/Eigen -Werror=return-type -DSPLINTER_ALLOW_SCATTER
-// #include <cinterface/cinterface.h>
+// #cgo CXXFLAGS: -std=c++11  -Werror=return-type -DSPLINTER_ALLOW_SCATTER
+// #cgo CFLAGS: -Werror=return-type -DSPLINTER_ALLOW_SCATTER
+// #cgo LDFLAGS: -lsplinter-static-3-0 -lstdc++ -lm
+// #include "cinterface.h"
 // #include <stdlib.h>
 import "C"
 
