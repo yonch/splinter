@@ -25,7 +25,8 @@ BSpline::Builder::Builder(const DataTable &data)
         _numBasisFunctions(std::vector<unsigned int>(data.getNumVariables(), 0)),
         _knotSpacing(KnotSpacing::AS_SAMPLED),
         _smoothing(Smoothing::NONE),
-        _alpha(0.1)
+        _alpha(0.1),
+        _padding(0.0)
 {
 }
 
