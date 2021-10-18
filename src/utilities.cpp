@@ -73,10 +73,16 @@ std::vector<double> linspace(double start, double stop, unsigned int num)
 {
     std::vector<double> ret;
     double dx = 0;
-    if (num > 1)
+    // for numeric stability, we try to do no arithmetic on the edge
+    if (num > 0)
+        ret.push_back(start);
+
+    if (num > 1) {
         dx = (stop - start)/(num-1);
-    for (unsigned int i = 0; i < num; ++i)
-        ret.push_back(start + i*dx);
+        for (unsigned int i = 1; i < num - 1; ++i)
+            ret.push_back(start + i*dx);
+        ret.push_back(stop);
+    }
     return ret;
 }
 
