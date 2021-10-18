@@ -167,6 +167,16 @@ SPLINTER_API void splinter_bspline_builder_set_smoothing(splinter_obj_ptr bsplin
 SPLINTER_API void splinter_bspline_builder_set_alpha(splinter_obj_ptr bspline_builder_ptr, double alpha);
 
 /**
+ * Set the padding of the Builder. 
+ * 
+ * The estimated domain is set to [lo-padding*range, hi+padding*range] where `range` is (hi-lo).
+ *
+ * @param bspline_builder_ptr The Builder to set the alpha of.
+ * @param padding The new padding to use (must be non-negative).
+ */
+SPLINTER_API void splinter_bspline_builder_set_padding(splinter_obj_ptr bspline_builder_ptr, double padding);
+
+/**
  * Build the BSpline with the parameters of the Builder.
  *
  * @param bspline_builder_ptr The Builder to "build the BSpline with".

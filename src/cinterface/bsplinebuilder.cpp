@@ -128,7 +128,22 @@ void splinter_bspline_builder_set_alpha(splinter_obj_ptr bspline_builder_ptr, do
         set_error_string(e.what());
     }
 }
- 
+
+void splinter_bspline_builder_set_padding(splinter_obj_ptr bspline_builder_ptr, double padding)
+{
+    auto builder = get_builder(bspline_builder_ptr);
+    if (builder == nullptr)
+    {
+        // Error string will have been set by get_builder
+        return;
+    }
+
+    try {
+        builder->padding(padding);
+    } catch (const Exception &e) {
+        set_error_string(e.what());
+    }
+}
 
 splinter_obj_ptr splinter_bspline_builder_build(splinter_obj_ptr bspline_builder_ptr)
 {

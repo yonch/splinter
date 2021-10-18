@@ -152,6 +152,11 @@ func (builder *BSplineBuilder) Alpha(alpha float64) error {
 	return getErrorIfExists()
 }
 
+func (builder *BSplineBuilder) Padding(padding float64) error {
+	C.splinter_bspline_builder_set_padding(builder.ptr, C.double(padding))
+	return getErrorIfExists()
+}
+
 func (builder *BSplineBuilder) NumBasisFunctions(n []int) error {
 
 	// Convert to C.uint

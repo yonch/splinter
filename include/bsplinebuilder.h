@@ -94,6 +94,15 @@ public:
         return *this;
     }
 
+    Builder& padding(double padding)
+    {
+        if (padding < 0)
+            throw Exception("BSpline::Builder::padding: padding must be non-negative.");
+
+        _padding = padding;
+        return *this;
+    }
+
     // Build B-spline
     BSpline build() const;
 
@@ -132,6 +141,7 @@ private:
     KnotSpacing _knotSpacing;
     Smoothing _smoothing;
     double _alpha;
+    double _padding;
 };
 
 } // namespace SPLINTER

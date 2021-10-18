@@ -452,18 +452,23 @@ std::vector<double> BSpline::Builder::knotVectorEquidistant(const std::vector<do
         throw Exception(e.str());
     }
 
+    // Compute boundaries
+    double range = unique.back() - unique.front();
+    double lo = unique.front() - _padding * range;
+    double hi = unique.back() + _padding * range;
+
     // Compute (n-k-2) equidistant interior knots
     unsigned int numIntKnots = std::max(n-k-2, (unsigned int)0);
     numIntKnots = std::min((unsigned int)10, numIntKnots);
-    std::vector<double> knots = linspace(unique.front(), unique.back(), numIntKnots);
+    std::vector<double> knots = linspace(lo, hi, numIntKnots);
 
     // Repeat first knot p + 1 times (for interpolation of start point)
     for (unsigned int i = 0; i < degree; ++i)
-        knots.insert(knots.begin(), unique.front());
+        knots.insert(knots.begin(), lo);
 
     // Repeat last knot p + 1 times (for interpolation of end point)
     for (unsigned int i = 0; i < degree; ++i)
-        knots.insert(knots.end(), unique.back());
+        knots.insert(knots.end(), hi);
 
     // Number of knots in a (p+1)-regular knot vector
     //assert(knots.size() == uniqueX.size() + degree + 1);
