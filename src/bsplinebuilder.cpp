@@ -460,7 +460,7 @@ std::vector<double> BSpline::Builder::knotVectorEquidistant(const std::vector<do
 
     // Compute (n-k-2) equidistant interior knots
     unsigned int numIntKnots = std::max(n-k-2, (unsigned int)0);
-    numIntKnots = std::min((unsigned int)10, numIntKnots);
+    // numIntKnots = std::min((unsigned int)10, numIntKnots);
     std::vector<double> knots = linspace(lo, hi, numIntKnots);
 
     // Repeat first knot p + 1 times (for interpolation of start point)
