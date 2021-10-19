@@ -13,9 +13,11 @@
 namespace SPLINTER
 {
 
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
 std::set<splinter_obj_ptr> dataTables = std::set<splinter_obj_ptr>();
 std::set<splinter_obj_ptr> bsplines = std::set<splinter_obj_ptr>();
 std::set<splinter_obj_ptr> bspline_builders = std::set<splinter_obj_ptr>();
+#endif
 
 // 1 if the last function call caused an error, 0 else
 int splinter_last_func_call_error = 0;
@@ -31,7 +33,11 @@ void set_error_string(const char *new_error_string)
 /* Cast the splinter_obj_ptr to a DataTable * */
 DataTable *get_datatable(splinter_obj_ptr datatable_ptr)
 {
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
     if (dataTables.count(datatable_ptr) > 0)
+#else
+    if (true)
+#endif
     {
         return static_cast<DataTable *>(datatable_ptr);
     }
@@ -44,7 +50,11 @@ DataTable *get_datatable(splinter_obj_ptr datatable_ptr)
 /* Cast the splinter_obj_ptr to a BSpline * */
 BSpline *get_bspline(splinter_obj_ptr bspline_ptr)
 {
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
     if (bsplines.count(bspline_ptr) > 0)
+#else
+    if (true)
+#endif
     {
         return static_cast<BSpline *>(bspline_ptr);
     }
@@ -57,7 +67,11 @@ BSpline *get_bspline(splinter_obj_ptr bspline_ptr)
 /* Check for existence of bspline_builder_ptr, then cast splinter_obj_ptr to a BSpline::Builder * */
 BSpline::Builder *get_builder(splinter_obj_ptr bspline_builder_ptr)
 {
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
     if (bspline_builders.count(bspline_builder_ptr) > 0)
+#else
+    if (true)
+#endif
     {
         return static_cast<BSpline::Builder *>(bspline_builder_ptr);
     }

@@ -25,7 +25,9 @@ splinter_obj_ptr splinter_bspline_builder_init(splinter_obj_ptr datatable_ptr)
     {
         DataTable *dataTable = get_datatable(datatable_ptr);
         bspline_builder_ptr = new BSpline::Builder(*dataTable);
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
         bspline_builders.insert(bspline_builder_ptr);
+#endif
     }
     catch (const Exception &e)
     {
@@ -156,7 +158,9 @@ splinter_obj_ptr splinter_bspline_builder_build(splinter_obj_ptr bspline_builder
     try
     {
         auto bspline = builder->build().clone();
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
         bsplines.insert(bspline);
+#endif
         return bspline;
     }
     catch (const Exception &e)

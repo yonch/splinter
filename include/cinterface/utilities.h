@@ -18,12 +18,14 @@
 namespace SPLINTER
 {
 
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
 // Declare the global variables for use in all source files
 // All extern variables are defined in cinterface/utilities.cpp
 // Keep a list of objects so we avoid performing operations on objects that don't exist
 extern std::set<splinter_obj_ptr> dataTables;
 extern std::set<splinter_obj_ptr> bsplines;
 extern std::set<splinter_obj_ptr> bspline_builders;
+#endif
 
 extern int splinter_last_func_call_error; // Tracks the success of the last function call
 extern const char *splinter_error_string; // Error string (if the last function call resulted in an error)

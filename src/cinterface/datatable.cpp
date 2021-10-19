@@ -22,7 +22,9 @@ splinter_obj_ptr splinter_datatable_init()
 {
     splinter_obj_ptr dataTable = (splinter_obj_ptr) new DataTable();
 
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
     dataTables.insert(dataTable);
+#endif
 
     return dataTable;
 }
@@ -34,7 +36,9 @@ splinter_obj_ptr splinter_datatable_load_init(const char *filename)
     try
     {
         dataTable = (splinter_obj_ptr) new DataTable(filename);
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
         dataTables.insert(dataTable);
+#endif
     }
     catch(const Exception &e)
     {
@@ -161,7 +165,9 @@ void splinter_datatable_delete(splinter_obj_ptr datatable_ptr)
     auto dataTable = get_datatable(datatable_ptr);
     if (dataTable != nullptr)
     {
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
         dataTables.erase(datatable_ptr);
+#endif
         delete dataTable;
     }
 }

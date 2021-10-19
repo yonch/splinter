@@ -23,7 +23,9 @@ splinter_obj_ptr splinter_bspline_load_init(const char *filename)
     try
     {
         bspline = (splinter_obj_ptr) new BSpline(filename);
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
         bsplines.insert(bspline);
+#endif
     }
     catch(const Exception &e)
     {
@@ -435,7 +437,9 @@ void splinter_bspline_delete(splinter_obj_ptr bspline_ptr)
 
     if (bspline != nullptr)
     {
+#ifdef SPLINTER_CINTERFACE_SINGLE_THREADED_ALLOC_CHECK
         bsplines.erase(bspline_ptr);
+#endif
         delete bspline;
     }
 }
