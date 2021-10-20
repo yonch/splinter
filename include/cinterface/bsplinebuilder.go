@@ -157,6 +157,11 @@ func (builder *BSplineBuilder) Padding(padding float64) error {
 	return getErrorIfExists()
 }
 
+func (builder *BSplineBuilder) Weights(weights []float64) error {
+	C.splinter_bspline_builder_set_weights(builder.ptr, (*C.double)(&weights[0]), C.int(len(weights)))
+	return getErrorIfExists()
+}
+
 func (builder *BSplineBuilder) NumBasisFunctions(n []int) error {
 
 	// Convert to C.uint

@@ -177,6 +177,17 @@ SPLINTER_API void splinter_bspline_builder_set_alpha(splinter_obj_ptr bspline_bu
 SPLINTER_API void splinter_bspline_builder_set_padding(splinter_obj_ptr bspline_builder_ptr, double padding);
 
 /**
+ * Set weights for P-splines. 
+ * 
+ * The number of weights `numSamples` should equal the number of samples in the DataTable used in the c'tor
+ *
+ * @param bspline_builder_ptr The Builder to set the alpha of.
+ * @param weights The weight vector
+ * @param n the length of the weight vector.
+ */
+SPLINTER_API void splinter_bspline_builder_set_weights(splinter_obj_ptr bspline_builder_ptr, double *weights, int n);
+
+/**
  * Build the BSpline with the parameters of the Builder.
  *
  * @param bspline_builder_ptr The Builder to "build the BSpline with".

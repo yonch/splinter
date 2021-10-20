@@ -103,6 +103,15 @@ public:
         return *this;
     }
 
+    Builder &weights(std::vector<double> weights) {
+        if (weights.size() != _data.getNumSamples()) {
+            throw Exception("BSpline::Builder::weights: weight vector length should equal number of samples in DataTable");
+        }
+
+        _weights.swap(weights);
+        return *this;
+    }
+
     // Build B-spline
     BSpline build() const;
 
@@ -123,6 +132,8 @@ private:
     DenseVector getSamplePointValues() const;
     // P-spline control point calculation
     SparseMatrix getSecondOrderFiniteDifferenceMatrix(const BSpline &bspline) const;
+    // P-spline weight matrix calculation
+    SparseMatrix getWeightMatrix() const;
 
     // Computing knots
     std::vector<std::vector<double>> computeKnotVectors() const;
@@ -142,6 +153,7 @@ private:
     Smoothing _smoothing;
     double _alpha;
     double _padding;
+    std::vector<double> _weights;
 };
 
 } // namespace SPLINTER
