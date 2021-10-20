@@ -115,9 +115,7 @@ DenseVector BSpline::Builder::computeCoefficients(const BSpline& bspline) const
         SparseMatrix Bt = B.transpose();
 
         // Weight matrix
-        SparseMatrix W;
-        W.resize(numSamples, numSamples);
-        W.setIdentity();
+        auto W = getWeightMatrix();
 
         // Second order finite difference matrix
         SparseMatrix D = getSecondOrderFiniteDifferenceMatrix(bspline);
@@ -313,6 +311,28 @@ SparseMatrix BSpline::Builder::getSecondOrderFiniteDifferenceMatrix(const BSplin
 
     return D;
 }
+
+// Compute weight matrix for P-splines
+SparseMatrix BSpline::Builder::getWeightMatrix() const
+{
+    unsigned int numSamples = _data.getNumSamples();
+
+    SparseMatrix W;
+    W.resize(numSamples, numSamples);
+    if (_weights.size() == 0) {
+        // no weights given, use the identity matrix
+        W.setIdentity();
+    } else {
+        // user set weights use those
+        W.reserve(Eigen::VectorXi::Constant(numSamples, 1));
+        for(unsigned int i = 0; i < numSamples; i++) {
+            W.insert(i,i) = _weights[i];
+        }
+    }
+
+    return W;
+}
+
 
 // Compute all knot vectors from sample data
 std::vector<std::vector<double> > BSpline::Builder::computeKnotVectors() const
