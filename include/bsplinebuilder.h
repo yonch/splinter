@@ -13,6 +13,8 @@
 #include "datatable.h"
 #include "bspline.h"
 
+#include <array>
+
 namespace SPLINTER
 {
 
@@ -112,6 +114,15 @@ public:
         return *this;
     }
 
+    Builder &bounds(std::vector<std::array<double,2> > bounds) {
+        if ((bounds.size() != 0) && (bounds.size() != _data.getNumVariables())) {
+            throw Exception("BSpline::Builder::bounds: bounds vector length should be 0 or equal to number of variables in DataTable");
+        }
+
+        _bounds.swap(bounds);
+        return *this;
+    }
+
     // Build B-spline
     BSpline build() const;
 
@@ -137,9 +148,9 @@ private:
 
     // Computing knots
     std::vector<std::vector<double>> computeKnotVectors() const;
-    std::vector<double> computeKnotVector(const std::vector<double> &values, unsigned int degree, unsigned int numBasisFunctions) const;
+    std::vector<double> computeKnotVector(const std::vector<double> &values, unsigned int degree, unsigned int numBasisFunctions, std::array<double, 2> bounds) const;
     std::vector<double> knotVectorMovingAverage(const std::vector<double> &values, unsigned int degree) const;
-    std::vector<double> knotVectorEquidistant(const std::vector<double> &values, unsigned int degree, unsigned int numBasisFunctions) const;
+    std::vector<double> knotVectorEquidistant(const std::vector<double> &values, unsigned int degree, unsigned int numBasisFunctions, std::array<double, 2> bounds) const;
     std::vector<double> knotVectorBuckets(const std::vector<double> &values, unsigned int degree, unsigned int maxSegments = 10) const;
 
     // Auxiliary
@@ -154,6 +165,7 @@ private:
     double _alpha;
     double _padding;
     std::vector<double> _weights;
+    std::vector<std::array<double,2> > _bounds;
 };
 
 } // namespace SPLINTER

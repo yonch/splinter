@@ -347,7 +347,12 @@ std::vector<std::vector<double> > BSpline::Builder::computeKnotVectors() const
     for (unsigned int i = 0; i < _data.getNumVariables(); ++i)
     {
         // Compute knot vector
-        auto knotVec = computeKnotVector(grid.at(i), _degrees.at(i), _numBasisFunctions.at(i));
+        std::array<double, 2> bounds = {std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN()};
+        if (_bounds.size() > 0) {
+            bounds = _bounds.at(i);
+        }
+
+        auto knotVec = computeKnotVector(grid.at(i), _degrees.at(i), _numBasisFunctions.at(i), bounds);
 
         knotVectors.push_back(knotVec);
     }
@@ -358,14 +363,15 @@ std::vector<std::vector<double> > BSpline::Builder::computeKnotVectors() const
 // Compute a single knot vector from sample grid and degree
 std::vector<double> BSpline::Builder::computeKnotVector(const std::vector<double> &values,
                                                         unsigned int degree,
-                                                        unsigned int numBasisFunctions) const
+                                                        unsigned int numBasisFunctions,
+                                                        std::array<double, 2> bounds) const
 {
     switch (_knotSpacing)
     {
         case KnotSpacing::AS_SAMPLED:
             return knotVectorMovingAverage(values, degree);
         case KnotSpacing::EQUIDISTANT:
-            return knotVectorEquidistant(values, degree, numBasisFunctions);
+            return knotVectorEquidistant(values, degree, numBasisFunctions, bounds);
         case KnotSpacing::EXPERIMENTAL:
             return knotVectorBuckets(values, degree);
         default:
@@ -452,7 +458,8 @@ std::vector<double> BSpline::Builder::knotVectorMovingAverage(const std::vector<
 
 std::vector<double> BSpline::Builder::knotVectorEquidistant(const std::vector<double> &values,
                                                             unsigned int degree,
-                                                            unsigned int numBasisFunctions = 0) const
+                                                            unsigned int numBasisFunctions,
+                                                            std::array<double, 2> bounds) const
 {
     // Sort and remove duplicates
     std::vector<double> unique = extractUniqueSorted(values);
@@ -474,9 +481,11 @@ std::vector<double> BSpline::Builder::knotVectorEquidistant(const std::vector<do
     }
 
     // Compute boundaries
-    double range = unique.back() - unique.front();
-    double lo = unique.front() - _padding * range;
-    double hi = unique.back() + _padding * range;
+    double lo = (std::isnan(bounds[0]) ? unique.front() : bounds[0]);
+    double hi = (std::isnan(bounds[1]) ? unique.back() : bounds[1]);
+    double pad = (hi - lo) * _padding;
+    lo -= pad;
+    hi += pad;
 
     // Compute (n-k-2) equidistant interior knots
     unsigned int numIntKnots = std::max(n-k-2, (unsigned int)0);

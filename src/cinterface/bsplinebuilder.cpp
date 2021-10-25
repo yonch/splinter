@@ -10,6 +10,7 @@
 #include "bsplinebuilder.h"
 #include "cinterface/cinterface.h"
 #include "cinterface/utilities.h"
+#include <array>
 //#include <fstream>
 
 using namespace SPLINTER;
@@ -159,6 +160,27 @@ void splinter_bspline_builder_set_weights(splinter_obj_ptr bspline_builder_ptr, 
     try {
         std::vector<double> wvec(weights, weights + n);
         builder->weights(wvec);
+    } catch (const Exception &e) {
+        set_error_string(e.what());
+    }
+}
+
+void splinter_bspline_builder_set_bounds(splinter_obj_ptr bspline_builder_ptr, double *min_bounds, double *max_bounds, int n)
+{
+    auto builder = get_builder(bspline_builder_ptr);
+    if (builder == nullptr)
+    {
+        // Error string will have been set by get_builder
+        return;
+    }
+
+    try {
+        std::vector<std::array<double,2> > bounds(n);
+        for (int i = 0; i < n; i++) {
+            bounds[i] = {min_bounds[i], max_bounds[i]};
+        }
+
+        builder->bounds(bounds);
     } catch (const Exception &e) {
         set_error_string(e.what());
     }

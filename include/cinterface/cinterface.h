@@ -188,6 +188,21 @@ SPLINTER_API void splinter_bspline_builder_set_padding(splinter_obj_ptr bspline_
 SPLINTER_API void splinter_bspline_builder_set_weights(splinter_obj_ptr bspline_builder_ptr, double *weights, int n);
 
 /**
+ * Set bounds for estimation knots. 
+ * 
+ * The caller supplies two arrays for the bounds, an array for min bounds and another for max.
+ * 
+ * The number of bounds `n` in each (min,max) array should equal the number of variables in the 
+ *   DataTable used in the c'tor
+ *
+ * @param bspline_builder_ptr The Builder to set the alpha of.
+ * @param min_bounds minimum bounds array
+ * @param min_bounds maximum bounds array
+ * @param n the length of bounds arrays.
+ */
+SPLINTER_API void splinter_bspline_builder_set_bounds(splinter_obj_ptr bspline_builder_ptr, double *min_bounds, double *max_bounds, int n);
+
+/**
  * Build the BSpline with the parameters of the Builder.
  *
  * @param bspline_builder_ptr The Builder to "build the BSpline with".

@@ -19,6 +19,7 @@ var (
 	ErrGotNullPtr        = errors.New("Unexpected NULL return from call")
 	ErrZeroVariables     = errors.New("BSpline returned variable dimension set to 0")
 	ErrDimensionMismatch = errors.New("Input dimension not equal to BSpline's")
+	ErrInvalidBounds     = errors.New("Bounds should contain min and max boundaries (exactly two elements)")
 )
 
 type KnotSpacing int
@@ -159,6 +160,21 @@ func (builder *BSplineBuilder) Padding(padding float64) error {
 
 func (builder *BSplineBuilder) Weights(weights []float64) error {
 	C.splinter_bspline_builder_set_weights(builder.ptr, (*C.double)(&weights[0]), C.int(len(weights)))
+	return getErrorIfExists()
+}
+
+func (builder *BSplineBuilder) Bounds(bounds [][]float64) error {
+	minBounds := make([]float64, len(bounds))
+	maxBounds := make([]float64, len(bounds))
+	for i, b := range bounds {
+		if len(b) != 2 {
+			return ErrInvalidBounds
+		}
+		minBounds[i] = b[0]
+		maxBounds[i] = b[1]
+	}
+
+	C.splinter_bspline_builder_set_bounds(builder.ptr, (*C.double)(&minBounds[0]), (*C.double)(&maxBounds[0]), C.int(len(bounds)))
 	return getErrorIfExists()
 }
 
