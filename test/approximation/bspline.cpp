@@ -368,7 +368,7 @@ TEST_CASE("Cubic BSpline jacobian" COMMON_TEXT, COMMON_TAGS "[bsplinetype::cubic
 {
     double one_eps = 6e-5;
     double two_eps = 6e-5;
-    double inf_eps = 6e-5;
+    double inf_eps = 7e-5;
 
     for (auto testFunc : getPolynomialFunctions())
     {
