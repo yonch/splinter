@@ -195,12 +195,20 @@ SPLINTER_API void splinter_bspline_builder_set_weights(splinter_obj_ptr bspline_
  * The number of bounds `n` in each (min,max) array should equal the number of variables in the 
  *   DataTable used in the c'tor
  *
- * @param bspline_builder_ptr The Builder to set the alpha of.
+ * @param bspline_builder_ptr The Builder to set bounds for.
  * @param min_bounds minimum bounds array
  * @param min_bounds maximum bounds array
  * @param n the length of bounds arrays.
  */
 SPLINTER_API void splinter_bspline_builder_set_bounds(splinter_obj_ptr bspline_builder_ptr, double *min_bounds, double *max_bounds, int n);
+
+/**
+ * Set the number of HFS iterations to optimize the smoothing parameter (alpha).
+ *
+ * @param bspline_builder_ptr The Builder to set the HFS iterations of.
+ * @param iters The new number of iterations.
+ */
+SPLINTER_API void splinter_bspline_builder_set_hfs_iters(splinter_obj_ptr bspline_builder_ptr, unsigned int iters);
 
 /**
  * Build the BSpline with the parameters of the Builder.

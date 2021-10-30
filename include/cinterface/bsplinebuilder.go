@@ -178,6 +178,11 @@ func (builder *BSplineBuilder) Bounds(bounds [][]float64) error {
 	return getErrorIfExists()
 }
 
+func (builder *BSplineBuilder) HfsIters(iters uint) error {
+	C.splinter_bspline_builder_set_hfs_iters(builder.ptr, C.uint(iters))
+	return getErrorIfExists()
+}
+
 func (builder *BSplineBuilder) NumBasisFunctions(n []int) error {
 
 	// Convert to C.uint

@@ -112,6 +112,9 @@ DenseVector BSpline::Builder::computeCoefficients(const BSpline& bspline) const
         // Assuming regular grid
         unsigned int numSamples = _data.getNumSamples();
 
+        // get \lambda, the smoothing parameter
+        auto l = _alpha;
+
         SparseMatrix Bt = B.transpose();
 
         // Weight matrix
@@ -121,10 +124,55 @@ DenseVector BSpline::Builder::computeCoefficients(const BSpline& bspline) const
         SparseMatrix D = getSecondOrderFiniteDifferenceMatrix(bspline);
 
         // Left-hand side matrix
-        A = Bt*W*B + _alpha*D.transpose()*D;
+        SparseMatrix BtW = Bt*W;
+        SparseMatrix BtWB = BtW*B;
+        A = BtWB + l*D.transpose()*D;
+
+        // Save y the sampled values
+        DenseVector y = b;
 
         // Compute right-hand side matrices
         b = Bt*W*b;
+
+        // Optimize smoothing parameter alpha using the HFS algorithm
+        // For a description of HFS, see Chapter 3.4:
+        //   Eilers, Paul H.C.; Marx, Brian D.. Practical Smoothing (The Joys of P-splines). Cambridge University Press.
+        for (int hfsIter = 0; hfsIter < _hfsIters; hfsIter++) {
+            // invert A = (B'WB + lD'D)
+            auto Ainv = Eigen::PartialPivLU<DenseMatrix>(A.toDense()).inverse();
+            // compute G = (B'WB + lD'D)^-1 B'WB
+            auto G = (Ainv*BtWB);
+            // ED = trace(G), the effective model dimension
+            double ED = G.trace();
+            // Estimate x (book calls this alpha)
+            DenseVector x = Ainv * (BtW * y);
+
+#ifdef HFS_USE_BOOK_TAU_SIGMA
+            // Method 1: book
+            // tau^2 = ||D x||^2 / (ED - d)
+            double tau_squared = (D * x).squaredNorm() / (ED - _data.getNumVariables());
+            // sigma^2 = ||y - B x||^2 / (m - ED)
+            double sigma_squared = (y - (B * x)).squaredNorm() / (_data.getNumSamples() - ED);
+#else
+            // Method 2: From code example https://psplines.bitbucket.io/Docs/doc-f-HFS-convergence.pdf
+            // tau^2 = ||D x||^2 / ED 
+            double tau_squared = (D * x).squaredNorm() / ED;
+            // sigma^2 = ||y - B x||^2 / (m - d - ED)
+            double sigma_squared = (y - (B * x)).squaredNorm() / (_data.getNumSamples()-_data.getNumVariables() - ED);
+#endif
+
+            // update \lambda = \sigma^2 / \tau^2
+            l = sigma_squared / tau_squared;
+            // we'll need to update A with new \lambda for next iteration or solving
+            A = BtWB + l*D.transpose()*D;
+#ifndef NDEBUG
+            std::cout << "HFS iteration " << hfsIter 
+                      << " new alpha is " << l 
+                      << " ED=" << ED
+                      << " tau^2=" << tau_squared 
+                      << " sigma^2=" << sigma_squared << "\n";
+#endif
+        }
     }
 
     DenseVector x;

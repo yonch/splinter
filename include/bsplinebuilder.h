@@ -123,6 +123,17 @@ public:
         return *this;
     }
 
+    // hfsIters controls the number of HFS (Harville–Fellner–Schall) iterations to run to 
+    //   optimize the smoothing parameter (given in `BSpline::Builder::alpha()`).
+    //
+    // For a description of HFS, see Chapter 3.4:
+    //   Eilers, Paul H.C.; Marx, Brian D.. Practical Smoothing (The Joys of P-splines). Cambridge University Press.
+    Builder& hfsIters(unsigned int hfsIters)
+    {
+        _hfsIters = hfsIters;
+        return *this;
+    }
+
     // Build B-spline
     BSpline build() const;
 
@@ -166,6 +177,7 @@ private:
     double _padding;
     std::vector<double> _weights;
     std::vector<std::array<double,2> > _bounds;
+    unsigned int _hfsIters;
 };
 
 } // namespace SPLINTER

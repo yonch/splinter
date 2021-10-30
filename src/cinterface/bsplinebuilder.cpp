@@ -186,6 +186,22 @@ void splinter_bspline_builder_set_bounds(splinter_obj_ptr bspline_builder_ptr, d
     }
 }
 
+SPLINTER_API void splinter_bspline_builder_set_hfs_iters(splinter_obj_ptr bspline_builder_ptr, unsigned int iters)
+{
+    auto builder = get_builder(bspline_builder_ptr);
+    if (builder == nullptr)
+    {
+        // Error string will have been set by get_builder
+        return;
+    }
+
+    try {
+        builder->hfsIters(iters);
+    } catch (const Exception &e) {
+        set_error_string(e.what());
+    }
+}
+
 splinter_obj_ptr splinter_bspline_builder_build(splinter_obj_ptr bspline_builder_ptr)
 {
     auto builder = get_builder(bspline_builder_ptr);
