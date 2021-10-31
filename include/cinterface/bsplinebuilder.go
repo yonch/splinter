@@ -58,6 +58,10 @@ func getErrorIfExists() error {
 	return nil
 }
 
+////////////////////
+//// DataTable
+////////////////////
+
 func NewDataTable() (*DataTable, error) {
 	ptr := C.splinter_datatable_init()
 	err := getErrorIfExists()
@@ -109,6 +113,10 @@ func (dt DataTable) AddColumns(columns ...[]float64) error {
 		C.int(n), C.int(len(columns)-1))
 	return getErrorIfExists()
 }
+
+////////////////////
+//// BSplineBuilder
+////////////////////
 
 func NewBSplineBuilder(table *DataTable) (*BSplineBuilder, error) {
 	if table == nil {
@@ -213,6 +221,10 @@ func (builder *BSplineBuilder) Build() (*BSpline, error) {
 	return res, nil
 }
 
+/////////////
+//// BSpline
+/////////////
+
 func (bs *BSpline) Free() {
 	runtime.SetFinalizer(bs, nil)
 	C.splinter_bspline_delete(bs.ptr)
@@ -242,4 +254,34 @@ func (bs *BSpline) Eval(vals ...float64) (float64, error) {
 	}
 
 	return *(*float64)(unsafe.Pointer(arr)), nil
+}
+
+func (bs *BSpline) GetCoefficients() ([]float64, error) {
+	n := C.splinter_bspline_get_num_coefficients(bs.ptr)
+	if n < 0 {
+		return nil, getErrorIfExists()
+	}
+
+	arr := C.splinter_bspline_get_coefficients(bs.ptr)
+	if arr == nil {
+		return nil, getErrorIfExists()
+	}
+	defer C.free(unsafe.Pointer(arr))
+
+	// to be on the safe side that values are valid, check error explicitly even if we got a non-nil
+	err := getErrorIfExists()
+	if err != nil {
+		return nil, err
+	}
+
+	// based on https://github.com/golang/go/wiki/cgo#turning-c-arrays-into-go-slices
+	coeffInCMemory := (*[1 << 28]float64)(unsafe.Pointer(arr))[:n:n]
+
+	// make our own slice
+	coeff := make([]float64, 0, n)
+
+	// append the elements from the C slice to golang-managed memory
+	coeff = append(coeff, coeffInCMemory...)
+
+	return coeff, nil
 }
