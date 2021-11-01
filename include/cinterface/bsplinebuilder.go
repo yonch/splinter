@@ -285,3 +285,8 @@ func (bs *BSpline) GetCoefficients() ([]float64, error) {
 
 	return coeff, nil
 }
+
+func (bs *BSpline) SetCoefficients(coeffs []float64) error {
+	C.splinter_bspline_set_coefficients(bs.ptr, (*C.double)(unsafe.Pointer(&coeffs[0])), C.int(len(coeffs)))
+	return getErrorIfExists()
+}

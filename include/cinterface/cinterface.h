@@ -272,6 +272,15 @@ SPLINTER_API int splinter_bspline_get_num_coefficients(splinter_obj_ptr bspline_
 SPLINTER_API double *splinter_bspline_get_coefficients(splinter_obj_ptr bspline_ptr);
 
 /**
+ * Set the coefficients of the BSpline
+ *
+ * @param bspline_ptr Pointer to the BSpline
+ * @param coeffs Array of coefficients
+ * @param n_coeffs Size of coefficients array
+ */
+SPLINTER_API void splinter_bspline_set_coefficients(splinter_obj_ptr bspline_ptr, double *coeffs, int n_coeffs);
+
+/**
  * Get the control points of the BSpline
  * Returns a two-dimensional matrix with
  * splinter_bspline_get_num_coefficients rows (NOTE *coefficients*, not *control*)

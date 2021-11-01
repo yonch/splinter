@@ -159,6 +159,24 @@ double *splinter_bspline_get_coefficients(splinter_obj_ptr bspline_ptr)
     return coefficients_as_array;
 }
 
+void splinter_bspline_set_coefficients(splinter_obj_ptr bspline_ptr, double *coeffs, int n_coeffs)
+{
+    auto bspline = get_bspline(bspline_ptr);
+    if (bspline == nullptr)
+    {
+        // Error string will have been set by get_bspline
+        return;
+    }
+
+    try {
+        Eigen::Map<DenseVector> map(coeffs, n_coeffs);
+        bspline->setCoefficients(map);
+    } catch (const Exception &e) {
+        set_error_string(e.what());
+    }
+}
+
+
 double *splinter_bspline_get_control_points(splinter_obj_ptr bspline_ptr)
 {
     auto bspline = get_bspline(bspline_ptr);
