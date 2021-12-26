@@ -173,6 +173,9 @@ DenseVector BSpline::Builder::computeCoefficients(const BSpline& bspline) const
                       << " sigma^2=" << sigma_squared << "\n";
 #endif
         }
+#if 0
+        std::cout << "P-Spline alpha is " << l << "\n";
+#endif
     }
 
     DenseVector x;
