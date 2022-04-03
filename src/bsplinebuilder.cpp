@@ -26,7 +26,8 @@ BSpline::Builder::Builder(const DataTable &data)
         _knotSpacing(KnotSpacing::AS_SAMPLED),
         _smoothing(Smoothing::NONE),
         _alpha(0.1),
-        _padding(0.0)
+        _padding(0.0),
+        _hfsIters(0)
 {
 }
 
